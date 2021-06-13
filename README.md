@@ -1,9 +1,11 @@
 - Criar um usuário
 
 `POST /`
+
 `curl --data "{\"user\":\"ana\"}" --header "Content-Type: application/json" http://localhost:8000`
 
 Request:
+
 ```json
 {
   "user": "ana"
@@ -11,6 +13,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -23,9 +26,11 @@ Response:
 - Obter um usuário
 
 `GET /?user=ana`
+
 `curl http://localhost:8000/?user=ana`
 
 Response:
+
 ```json
 {
   "success": true,
@@ -38,9 +43,11 @@ Response:
 - Enviar mensagem
 
 `POST /sendmail`
+
 `curl --data "{\"sender\":\"ana\",\"receiver\":\"paula\",\"subject\":\"teste\",\"body\":\"Teste\"}" --header "Content-Type: application/json" http://localhost:8000/sendmail`
 
 Request:
+
 ```json
 {
   "sender": "ana",
@@ -51,6 +58,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -69,9 +77,11 @@ Response:
 - Listar mensagens
 
 `GET /listmails?user=ana`
+
 `curl http://localhost:8000/listmails?user=ana`
 
 Response:
+
 ```json
 {
   "success": true,
@@ -114,9 +124,11 @@ Response:
 - Abrir mensagem
 
 `GET /openmail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
+
 `curl http://localhost:8000/openmail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
 
 Response:
+
 ```json
 {
   "success": true,
@@ -135,9 +147,11 @@ Response:
 - Responder mensagem
 
 `PUT /replymail`
+
 `curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"replied_by\":\"paula\",\"reply\":\"Resposta\"}" http://localhost:8000/replymail`
 
 Request:
+
 ```json
 {
   "id": 8eb7f3a0-8552-493d-8786-db7514cd3d0c,
@@ -147,6 +161,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -181,9 +196,11 @@ Response:
 - Encaminhar mensagem
 
 `PUT /forwardmail`
+
 `curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"forward_to\":\"maria\"}" http://localhost:8000/forwardmail`
 
 Request:
+
 ```json
 {
   "id": 8eb7f3a0-8552-493d-8786-db7514cd3d0c,
@@ -192,6 +209,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -226,9 +244,11 @@ Response:
 - Apagar mensagem
 
 `DELETE /deletemail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
+
 `curl -X DELETE http://localhost:8000/deletemail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c -H "Accept: application/json"`
 
 Response:
+
 ```json
 {
   "success": true,
