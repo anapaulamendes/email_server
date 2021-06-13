@@ -154,7 +154,7 @@ Request:
 
 ```json
 {
-  "id": 8eb7f3a0-8552-493d-8786-db7514cd3d0c,
+  "id": "8eb7f3a0-8552-493d-8786-db7514cd3d0c",
   "replied_by": "paula",
   "reply": "Resposta"
 }
@@ -203,7 +203,7 @@ Request:
 
 ```json
 {
-  "id": 8eb7f3a0-8552-493d-8786-db7514cd3d0c,
+  "id": "8eb7f3a0-8552-493d-8786-db7514cd3d0c",
   "forward_to": "maria",
 }
 ```
