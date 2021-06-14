@@ -47,19 +47,29 @@ Observações:
 - [Linux KDE neon 5.22](https://kde.org/info/plasma-5.22.0/)
 
 > Operating System: KDE neon 5.22
+> 
 > KDE Plasma Version: 5.22.0
+> 
 > KDE Frameworks Version: 5.82.0
+> 
 > Qt Version: 5.15.3
+> 
 > Kernel Version: 5.4.0-74-generic (64-bit)
+> 
 > Graphics Platform: X11
+> 
 > Processors: 8 × Intel® Core™ i5-8265U CPU @ 1.60GHz
+> 
 > Memory: 7,6 GiB of RAM
+> 
 > Graphics Processor: Mesa Intel® UHD Graphics 620
 
 
 ## Rodando o servidor:
 
-`python3 server.py`
+```
+python3 server.py
+```
 
 > O servidor irá rodar na porta 8000 por padrão.
 > Pode ser acessado em: http://localhost:8000/
@@ -70,7 +80,9 @@ Observações:
 
 `POST /`
 
-`curl --data "{\"user\":\"ana\"}" --header "Content-Type: application/json" http://localhost:8000`
+```shell
+curl --data "{\"user\":\"ana\"}" --header "Content-Type: application/json" http://localhost:8000
+```
 
 Request:
 
@@ -95,7 +107,9 @@ Response:
 
 `GET /?user=ana`
 
-`curl http://localhost:8000/?user=ana`
+```shell
+curl http://localhost:8000/?user=ana
+```
 
 Response:
 
@@ -112,7 +126,9 @@ Response:
 
 `POST /sendmail`
 
-`curl --data "{\"sender\":\"ana\",\"receiver\":\"paula\",\"subject\":\"teste\",\"body\":\"Teste\"}" --header "Content-Type: application/json" http://localhost:8000/sendmail`
+```shell
+curl --data "{\"sender\":\"ana\",\"receiver\":\"paula\",\"subject\":\"teste\",\"body\":\"Teste\"}" --header "Content-Type: application/json" http://localhost:8000/sendmail
+```
 
 Request:
 
@@ -146,7 +162,9 @@ Response:
 
 `GET /listmails?user=ana`
 
-`curl http://localhost:8000/listmails?user=ana`
+```shell
+curl http://localhost:8000/listmails?user=ana
+```
 
 Response:
 
@@ -193,7 +211,9 @@ Response:
 
 `GET /openmail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
 
-`curl http://localhost:8000/openmail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
+```shell
+curl http://localhost:8000/openmail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c
+```
 
 Response:
 
@@ -216,7 +236,9 @@ Response:
 
 `PUT /replymail`
 
-`curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"replied_by\":\"paula\",\"reply\":\"Resposta\"}" http://localhost:8000/replymail`
+```shell
+curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"replied_by\":\"paula\",\"reply\":\"Resposta\"}" http://localhost:8000/replymail
+```
 
 Request:
 
@@ -265,7 +287,9 @@ Response:
 
 `PUT /forwardmail`
 
-`curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"forward_to\":\"maria\"}" http://localhost:8000/forwardmail`
+```shell
+curl -X PUT --data "{\"id\":\"8eb7f3a0-8552-493d-8786-db7514cd3d0c\",\"forward_to\":\"maria\"}" http://localhost:8000/forwardmail
+```
 
 Request:
 
@@ -313,7 +337,9 @@ Response:
 
 `DELETE /deletemail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c`
 
-`curl -X DELETE http://localhost:8000/deletemail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c -H "Accept: application/json"`
+```shell
+curl -X DELETE http://localhost:8000/deletemail?id=8eb7f3a0-8552-493d-8786-db7514cd3d0c -H "Accept: application/json"
+```
 
 Response:
 
