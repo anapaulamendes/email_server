@@ -54,6 +54,13 @@ class _RequestHandler(BaseHTTPRequestHandler):
         if self.path == "/deletemail":
             _methods.delete_mail(self, query_params)
 
+    def do_OPTIONS(self):
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+        self.send_header("Access-Control-Allow-Headers", "content-type")
+        self.end_headers()
+
 
 def run_server():
     server_address = ("", PORT)

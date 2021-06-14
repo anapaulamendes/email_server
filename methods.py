@@ -39,6 +39,7 @@ class Methods:
 
     def send_mail(self):
         request = get_request(self)
+        # Verify if users exists
         email = {"id": str(uuid.uuid4()), "forwarded_to": [], "replies": []}
         email.update(request)
         with open("db/emails.json", "r+") as file:
