@@ -3,11 +3,19 @@ import json
 import uuid
 
 
+def get_request(self):
+    length = int(self.headers.get("content-length"))
+    request = json.loads(self.rfile.read(length))
+    return request
+
+
+def response(self, json_output):
+    return self.wfile.write(json.dumps(json_output).encode("utf-8"))
+
+
 class Methods:
     def save_user(self):
-        length = int(self.headers.get("content-length"))
-        request = json.loads(self.rfile.read(length))
-        self._set_headers()
+        request = get_request(self)
         with open("db/users.json", "r+") as file:
             # data = {"users": []}
             data = json.load(file)
@@ -15,39 +23,22 @@ class Methods:
                 data["users"].append(request["user"])
                 file.seek(0)
                 json.dump(data, file)
-                self.wfile.write(
-                    json.dumps({"success": True, "response": request}).encode("utf-8")
-                )
+                return response(self, {"success": True, "response": request})
             else:
-                self.wfile.write(
-                    json.dumps({"success": False, "error": "Usuario ja existe"}).encode(
-                        "utf-8"
-                    )
-                )
+                return response(self, {"success": False, "error": "Usuario ja existe"})
 
     def get_user(self, query_params):
-        self._set_headers()
         if query_params is not None:
             user = query_params.split("=")[1]
         with open("db/users.json", "r") as file:
             data = json.load(file)
         if user in data["users"]:
-            self.wfile.write(
-                json.dumps({"success": True, "response": {"user": user}}).encode(
-                    "utf-8"
-                )
-            )
+            return response(self, {"success": True, "response": {"user": user}})
         else:
-            self.wfile.write(
-                json.dumps(
-                    {"success": False, "error": "Usuario nao encontrado"}
-                ).encode("utf-8")
-            )
+            return response(self, {"success": False, "error": "Usuario nao encontrado"})
 
     def send_mail(self):
-        length = int(self.headers.get("content-length"))
-        request = json.loads(self.rfile.read(length))
-        self._set_headers()
+        request = get_request(self)
         email = {"id": str(uuid.uuid4()), "forwarded_to": [], "replies": []}
         email.update(request)
         with open("db/emails.json", "r+") as file:
@@ -56,12 +47,9 @@ class Methods:
             data.append(email)
             file.seek(0)
             json.dump(data, file)
-            self.wfile.write(
-                json.dumps({"success": True, "response": email}).encode("utf-8")
-            )
+            return response(self, {"success": True, "response": email})
 
     def list_mails(self, query_params):
-        self._set_headers()
         received = []
         sent = []
         if query_params is not None:
@@ -73,28 +61,21 @@ class Methods:
                 received.append(email)
             elif email["sender"] == user:
                 sent.append(email)
-        self.wfile.write(
-            json.dumps(
-                {"success": True, "response": {"received": received, "sent": sent}}
-            ).encode("utf-8")
+        return response(
+            self, {"success": True, "response": {"received": received, "sent": sent}}
         )
 
     def open_mail(self, query_params):
-        self._set_headers()
         if query_params is not None:
             id = query_params.split("=")[1]
         with open("db/emails.json", "r") as file:
             data = json.load(file)
         for email in data:
             if email["id"] == id:
-                return self.wfile.write(
-                    json.dumps({"success": True, "response": email}).encode("utf-8")
-                )
+                return response(self, {"success": True, "response": email})
 
     def replay_mail(self):
-        length = int(self.headers.get("content-length"))
-        request = json.loads(self.rfile.read(length))
-        self._set_headers()
+        request = get_request(self)
         reply = {
             "datetime": datetime.datetime.now().strftime("%c"),
             "replied_by": request["replied_by"],
@@ -107,14 +88,10 @@ class Methods:
                     email["replies"].append(reply)
                     file.seek(0)
                     json.dump(data, file)
-                    return self.wfile.write(
-                        json.dumps({"success": True, "response": email}).encode("utf-8")
-                    )
+                    return response(self, {"success": True, "response": email})
 
     def forward_mail(self):
-        length = int(self.headers.get("content-length"))
-        request = json.loads(self.rfile.read(length))
-        self._set_headers()
+        request = get_request(self)
         with open("db/emails.json", "r+") as file:
             data = json.load(file)
             for email in data:
@@ -122,12 +99,9 @@ class Methods:
                     email["forwarded_to"].append(request["forward_to"])
                     file.seek(0)
                     json.dump(data, file)
-                    return self.wfile.write(
-                        json.dumps({"success": True, "response": email}).encode("utf-8")
-                    )
+                    return response(self, {"success": True, "response": email})
 
     def delete_mail(self, query_params):
-        self._set_headers()
         if query_params is not None:
             id = query_params.split("=")[1]
         with open("db/emails.json", "r+") as file:
@@ -137,8 +111,6 @@ class Methods:
                     del data[i]
                     file.seek(0)
                     json.dump(data, file)
-                    return self.wfile.write(
-                        json.dumps(
-                            {"success": True, "response": "E-mail deletado."}
-                        ).encode("utf-8")
+                    return response(
+                        self, {"success": True, "response": "E-mail deletado."}
                     )
