@@ -9,12 +9,13 @@ _methods = methods.Methods
 
 class _RequestHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
-        self.send_response(HTTPStatus.OK.value)
+        self.send_response(HTTPStatus.OK)
         self.send_header("Content-type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
     def do_GET(self):
+        self._set_headers()
         if self.path.find("?") != -1:
             path, param = self.path.split("?")[0], self.path.split("?")[1]
             self.path = path
@@ -29,18 +30,21 @@ class _RequestHandler(BaseHTTPRequestHandler):
             _methods.open_mail(self, query_params)
 
     def do_POST(self):
+        self._set_headers()
         if self.path == "/":
             _methods.save_user(self)
         if self.path == "/sendmail":
             _methods.send_mail(self)
 
     def do_PUT(self):
+        self._set_headers()
         if self.path == "/replymail":
             _methods.replay_mail(self)
         if self.path == "/forwardmail":
             _methods.forward_mail(self)
 
     def do_DELETE(self):
+        self._set_headers()
         if self.path.find("?") != -1:
             path, param = self.path.split("?")[0], self.path.split("?")[1]
             self.path = path
