@@ -111,6 +111,7 @@ class Methods:
                 if data[i]["id"] == id:
                     del data[i]
                     file.seek(0)
+                    file.truncate()
                     json.dump(data, file)
                     return response(
                         self, {"success": True, "response": "E-mail deletado."}
