@@ -114,5 +114,5 @@ class Methods:
                     file.truncate()
                     json.dump(data, file)
                     return response(
-                        self, {"success": True, "response": "E-mail deletado."}
+                        self, {"success": True, "response": "Mensagem apagada."}
                     )
