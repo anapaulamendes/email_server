@@ -346,7 +346,7 @@ Response:
 ```json
 {
   "success": true,
-  "response": "E-mail deletado."
+  "response": "Mensagem apagada."
 }
 ```
 
