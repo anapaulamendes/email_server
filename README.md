@@ -1,74 +1,36 @@
 # Implementação de um serviço de mensagens - Servidor
 
-## Propósito:
+## Requisitos:
 
-Utilizando WebServices no modelo REST, desenvolva um servidor de e-mail simplificado.
-Ele deve implementar, pelo menos, as seguintes funcionalidades:
+- Python 3
 
-- Enviar mensagem
-- Listar mensagens
-- Apagar mensagens
-- Abrir mensagem
-- Encaminhar mensagem
-- Responder Mensagem
+## Descrição:
 
-Desenvolva também um cliente que utilize o servidor através de chamadas às funcionalidades implementadas.
-Ao conectar, o usuário deve informar seu nome. Esta será a forma de identificação.
-Não é necessário preocupar-se com autenticação. As mensagens podem ser armazenadas em um simples arquivo texto.
-Cada mensagem deve conter, pelo menos, os seguintes campos:
+Um servidor de mensagens utilizando o modelo REST com a introdução do protocolo de aplicação HTTP feito com a lib do Python, http.server.
 
-- Remetente
-- Destinatário
-- Assunto
-- Corpo
+As seguintes funcionalidades implementadas até agora:
 
-Observações:
+- GET
+  - Obter usuário
+  - Listar mensagens
+  - Obter mensagem
 
-1. As aplicações cliente e servidor devem executar facilmente em um computador, sem a necessidade de instalação
-   de grandes pacotes de desenvolvimento. Não serão aceitas aplicações executando na web.
+- POST
+  - Salvar usuário
+  - Enviar mensagem
 
-2. Deve ser anexado juntamente com o código, um documento em modo texto(README) contendo as informações
-   necessárias para a instalação e testes da aplicação.
+- PUT (internamente é um POST)
+  - Responder mensagem
+  - Encaminhar mensagem
 
-3. Utilize os métodos HTTP de acordo com o que é especificado pelo modelo REST.
-
-4. Não devem ser utilizadas frameworks no desenvolvimento do servidor que ocultem detalhes do modelo REST.
-   Afinal, a proposta principal é que vocês entendam como esse modelo funciona. Utilize uma biblioteca
-   semelhante a apresentada na videoaula(JAX-WS).
-
-5. No desenvolvimento do cliente, podem ser utilizadas quaisquer ferramentas e frameworks disponíveis.
-
-
-## Especificações e tecnologias utilizadas:
-
-- [Python 3.8.9](https://www.python.org/downloads/release/python-389/)
-- [http.server](https://docs.python.org/3/library/http.server.html)
-- [JSON](https://www.json.org/json-en.html)
-- [Linux KDE neon 5.22](https://kde.org/info/plasma-5.22.0/)
-
-> Operating System: KDE neon 5.22
-> 
-> KDE Plasma Version: 5.22.0
-> 
-> KDE Frameworks Version: 5.82.0
-> 
-> Qt Version: 5.15.3
-> 
-> Kernel Version: 5.4.0-74-generic (64-bit)
-> 
-> Graphics Platform: X11
-> 
-> Processors: 8 × Intel® Core™ i5-8265U CPU @ 1.60GHz
-> 
-> Memory: 7,6 GiB of RAM
-> 
-> Graphics Processor: Mesa Intel® UHD Graphics 620
+- DETELE (internamente é um POST)
+  - Apagar mensagem
 
 
 ## Rodando o servidor:
 
 ```
-python3 server.py
+python server.py --cgi
 ```
 
 > O servidor irá rodar na porta 8000 por padrão.
@@ -353,27 +315,19 @@ Response:
 ### Exemplos de logs do servidor
 
 ```shell
-serving at port 8000
-127.0.0.1 - - [13/Jun/2021 22:31:08] "POST / HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:31:20] "POST / HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:31:30] "POST / HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:32:02] "GET /?user=ana HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:32:07] "GET /?user=paula HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:32:10] "GET /?user=maria HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:32:13] "GET /?user=ma HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:32:43] "POST /sendmail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:33:08] "POST /sendmail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:33:34] "POST /sendmail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:34:30] "GET /listmails?user=ana HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:34:37] "GET /listmails?user=paula HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:34:40] "GET /listmails?user=maria HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:35:15] "GET /openmail?id=64f03f26-b4d6-41ad-b236-876b8d53b895 HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:35:41] "GET /openmail?id=67eec8ab-8432-4de1-a7e0-12c5656cd010 HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:35:57] "GET /openmail?id=0a8a747c-a0f4-4510-afb3-14e49531d6f0 HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:36:57] "PUT /replymail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:37:15] "PUT /replymail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:37:30] "PUT /replymail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:38:24] "PUT /forwardmail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:39:03] "PUT /forwardmail HTTP/1.1" 200 -
-127.0.0.1 - - [13/Jun/2021 22:41:05] "DELETE /deletemail?id=67eec8ab-8432-4de1-a7e0-12c5656cd010 HTTP/1.1" 200 -
+Servindo na porta: 8000
+Você pode acessar em: http://localhost:8000/
+127.0.0.1 - - [04/Mar/2023 10:31:22] "GET / HTTP/1.1" 400 -
+127.0.0.1 - - [04/Mar/2023 10:31:28] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:31:32] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:31:36] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:31:37] "POST / HTTP/1.1" 409 -
+127.0.0.1 - - [04/Mar/2023 10:31:40] "GET /?user=paula HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:31:44] "POST /sendmail HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:31:55] "GET /listmails?user=ana HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:32:04] "GET /openmail?id=4d74fa9d-8588-4cab-9d03-5b3accc567dd HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:32:22] "PUT /replymail HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:32:34] "PUT /forwardmail HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:32:42] "DELETE /deletemail?id=4d74fa9d-8588-4cab-9d03-5b3accc567dd HTTP/1.1" 200 -
+127.0.0.1 - - [04/Mar/2023 10:32:47] "OPTIONS / HTTP/1.1" 204 -
 ```

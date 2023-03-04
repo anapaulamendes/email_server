@@ -1,118 +1,52 @@
-import datetime
-import json
-import uuid
+from http import HTTPStatus
+from http.server import CGIHTTPRequestHandler
+
+from controllers import Controllers
+
+controllers = Controllers
 
 
-def get_request(self):
-    length = int(self.headers.get("content-length"))
-    request = json.loads(self.rfile.read(length))
-    return request
+def get_route_and_query_param(url):
+    if url.find("?") != -1:
+        return url.split("?")[0], url.split("?")[1]
+    else:
+        return url, None
 
 
-def response(self, json_output):
-    return self.wfile.write(json.dumps(json_output).encode("utf-8"))
+class RequestHandler(CGIHTTPRequestHandler):
+    def do_GET(self):
+        self.path, query_param = get_route_and_query_param(self.path)
 
+        if self.path == "/":
+            controllers.get_user(self, query_param)
+        elif self.path == "/listmails":
+            controllers.list_mails(self, query_param)
+        elif self.path == "/openmail":
+            controllers.open_mail(self, query_param)
 
-class Methods:
-    def save_user(self):
-        request = get_request(self)
-        with open("db/users.json", "r+") as file:
-            # data = {"users": []}
-            data = json.load(file)
-            if request["user"] not in data["users"]:
-                data["users"].append(request["user"])
-                file.seek(0)
-                json.dump(data, file)
-                return response(self, {"success": True, "response": request})
-            else:
-                return response(self, {"success": False, "error": "Usuario ja existe"})
+    def do_POST(self):
+        if self.path == "/":
+            controllers.save_user(self)
+        elif self.path == "/sendmail":
+            controllers.send_mail(self)
 
-    def get_user(self, query_params):
-        if query_params is not None:
-            user = query_params.split("=")[1]
-        with open("db/users.json", "r") as file:
-            data = json.load(file)
-        if user in data["users"]:
-            return response(self, {"success": True, "response": {"user": user}})
-        else:
-            return response(self, {"success": False, "error": "Usuario nao encontrado"})
+    def do_PUT(self):
+        if self.path == "/replymail":
+            controllers.replay_mail(self)
+        elif self.path == "/forwardmail":
+            controllers.forward_mail(self)
 
-    def send_mail(self):
-        request = get_request(self)
-        # Verify if users exists
-        email = {"id": str(uuid.uuid4()), "forwarded_to": [], "replies": []}
-        email.update(request)
-        with open("db/emails.json", "r+") as file:
-            # data = []
-            data = json.load(file)
-            data.append(email)
-            file.seek(0)
-            json.dump(data, file)
-            return response(self, {"success": True, "response": email})
+    def do_DELETE(self):
+        self.path, query_param = get_route_and_query_param(self.path)
 
-    def list_mails(self, query_params):
-        received = []
-        sent = []
-        if query_params is not None:
-            user = query_params.split("=")[1]
-        with open("db/emails.json", "r") as file:
-            data = json.load(file)
-        for email in data:
-            if email["receiver"] == user or user in email["forwarded_to"]:
-                received.append(email)
-            elif email["sender"] == user:
-                sent.append(email)
-        return response(
-            self, {"success": True, "response": {"received": received, "sent": sent}}
+        if self.path == "/deletemail":
+            controllers.delete_mail(self, query_param)
+
+    def do_OPTIONS(self):
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header(
+            "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"
         )
-
-    def open_mail(self, query_params):
-        if query_params is not None:
-            id = query_params.split("=")[1]
-        with open("db/emails.json", "r") as file:
-            data = json.load(file)
-        for email in data:
-            if email["id"] == id:
-                return response(self, {"success": True, "response": email})
-
-    def replay_mail(self):
-        request = get_request(self)
-        reply = {
-            "datetime": datetime.datetime.now().strftime("%c"),
-            "replied_by": request["replied_by"],
-            "reply": request["reply"],
-        }
-        with open("db/emails.json", "r+") as file:
-            data = json.load(file)
-            for email in data:
-                if email["id"] == request["id"]:
-                    email["replies"].append(reply)
-                    file.seek(0)
-                    json.dump(data, file)
-                    return response(self, {"success": True, "response": email})
-
-    def forward_mail(self):
-        request = get_request(self)
-        with open("db/emails.json", "r+") as file:
-            data = json.load(file)
-            for email in data:
-                if email["id"] == request["id"]:
-                    email["forwarded_to"].append(request["forward_to"])
-                    file.seek(0)
-                    json.dump(data, file)
-                    return response(self, {"success": True, "response": email})
-
-    def delete_mail(self, query_params):
-        if query_params is not None:
-            id = query_params.split("=")[1]
-        with open("db/emails.json", "r+") as file:
-            data = json.load(file)
-            for i in range(len(data)):
-                if data[i]["id"] == id:
-                    del data[i]
-                    file.seek(0)
-                    file.truncate()
-                    json.dump(data, file)
-                    return response(
-                        self, {"success": True, "response": "Mensagem apagada."}
-                    )
+        self.send_header("Access-Control-Allow-Headers", "content-type")
+        self.end_headers()
